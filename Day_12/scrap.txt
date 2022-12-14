@@ -1,0 +1,29 @@
+$active = $start
+        #$active = 1
+        Write-Verbose ("Active: {0}" -f $active)
+        
+        $movehist = @()
+        $usedsq = @()
+
+        #$movehist += 0
+        #$usedsq += 0
+
+        $movehist += $active
+        $usedsq += $active
+        
+        $exit = $false
+        $k = 0
+        While(!$exit){
+            $pmoves = $map[$active].Moves
+            $pmoves = $pmoves | ? {$_ -notin $usedsq}
+            Write-Verbose ("Possible Moves: {0}" -f ($pmoves -join ","))
+            
+
+            #move to next 
+            $active = $pmoves[0]
+            Write-Verbose ("Moved to {0}" -f $active)
+            $movehist += $active
+            $usedsq += $active
+            $k++
+            if($k -eq 3 ){$exit = $true}
+        }
