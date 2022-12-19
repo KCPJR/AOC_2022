@@ -1,0 +1,4 @@
+This was very ugly.
+Code is a mess.  Needs clean-up and removal of temporary tests etc...
+Part 2 was very inefficient.  It ran to completion and was correct but took hours to process.
+Look for a better way..
