@@ -22,16 +22,11 @@ Function D18{
             }
             Default {}
         }
-        $b = @()
+        #$b = @()
         $h = @{}
         foreach($dp in $data){
             $h[$dp] = $true
-            $b += [PSCustomObject]@{
-                [int]x = $dp.split(",")[0]
-                [int]y = $dp.split(",")[1]
-                [int]z = $dp.split(",")[2]
-                
-            }
+            
         }
         $GT = 0
         [int]$x = $data[0].split(",")[0]
@@ -92,32 +87,7 @@ Function D18{
         write-host ("Grand Total: {0}" -f $GT)
 
         #Part 2 
-        $trapped = @{}
-        
-        for($i = $xmin;$i -le $xmax;$i++){
-            for($j=$ymin;$j -le $ymax;$j++){
-                for($k = $zmin;$k -le $zmax;$k++){
-                    $coord = ("{0},{1},{2}" -f $i,$j,$k)
-                    Write-Verbose ("{0}" -f $coord)
-                    if(!$h.ContainsKey($coord)){
-                        $expsides = Get-ExposedSideCount -coord ("{0},{1},{2}" -f $i,$j,$k) -ht $h
-                        if($expsides -eq 0){$trapped[$coord] = $true}
-                    }
-                }
-            }
-        }
-        $trappedexpsides = 0
-        foreach($k in $trapped.Keys){
-                Write-Verbose ("Trapped: {0}" -f $k )
-            $expsides = Get-ExposedSideCount -coord $k -ht $trapped
-            $trappedexpsides = $trappedexpsides + $expsides
-        }
-        Write-Verbose ($trapped.Keys)
-Write-Verbose ("Trapped sides: {0}" -f $trappedexpsides)
-        $Part2 = $GT - ($trappedexpsides)
-        Write-host ("Part 2: {0}" -f $part2)
-    
-    $trapped
+       
     }
 }
 
