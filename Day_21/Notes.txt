@@ -1,0 +1,6 @@
+Part 1 works great.
+Part 2 was inefficient iterating until it found the solution.
+I manually guessed adjusting after each guess honing in on the solution.
+This could be written / meeds to be written
+
+General clean-up / optimization also needed.
