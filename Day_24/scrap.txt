@@ -1,0 +1,212 @@
+Function D24{
+    [CmdletBinding(DefaultParameterSetName = 'A')]
+    Param(
+        [Parameter(ParameterSetName = "A")]
+        [Switch] $Test1,
+
+        # Parameter help description
+        [Parameter(ParameterSetName = "B")]
+        [Switch]
+        $Real
+    )
+    Begin{
+
+        switch ($PsCmdlet.ParameterSetName) {
+            A {
+                Write-host "ParameterSet A"
+                $data = Get-Content .\Day_24\Input_test.txt
+            }
+            B {
+                Write-host "ParameterSet B"
+                $data = Get-Content .\Day_24\Input.txt
+            }
+            Default {}
+        }
+        #Field Hash
+        $f = @{}
+        #Bliz Array
+        $b = @()
+        [int] $y = 0
+        [int] $bid = 0
+        foreach($line in $Data){
+            $arr = $line.ToCharArray()
+            $x = 0
+            foreach($p in $arr){
+                $coord = ("{0},{1}" -f $x,$y)
+                switch($p){
+                    "#" {
+                        $f[$coord] = @($bid)
+                        $b += [PSCustomObject]@{
+                            BID = $bid
+                            Value = "#"
+                            Coord = $coord
+                            X = $x
+                            Y = $Y
+                            DX = 1
+                            DY = 0
+                        }
+                        $bid++
+                        break
+                    }
+                    "." {
+                        #we're not making an entry for open spots
+                        break
+                    }
+                    ">" {
+                        $f[$coord] = @($bid)
+                        $b += [PSCustomObject]@{
+                            BID = $bid
+                            Value = ">"
+                            Coord = $coord
+                            X = $x
+                            Y = $Y
+                            DX = 1
+                            DY = 0
+                        }
+                        $bid++
+                    }
+                    "V" {
+                        $f[$coord] = @($bid)
+                        $b += [PSCustomObject]@{
+                            BID = $bid
+                            Value = "v"
+                            Coord = $coord
+                            X = $x
+                            Y = $Y
+                            DX = 0
+                            DY = 1
+                        }
+                        $bid++
+                    }
+                    "<" {
+                        $f[$coord] = @($bid)
+                        $b += [PSCustomObject]@{
+                            BID = $bid
+                            Value = "<"
+                            Coord = $coord
+                            X = $x
+                            Y = $Y
+                            DX = -1
+                            DY = 0
+                        }
+                        $bid++
+                    }
+                    "^" {
+                        $f[$coord] = @($bid)
+                        $b += [PSCustomObject]@{
+                            BID = $bid
+                            Value = "^"
+                            Coord = $coord
+                            X = $x
+                            Y = $Y
+                            DX = 0
+                            DY = -1
+                        }
+                        $bid++
+                    }
+
+                }
+                $x++
+            }
+            $y++
+        }
+
+     #board built
+     #bliz identified and built   
+     #Set initial position and move counter
+     $EHist = @()
+     $E = "1,0"
+     $EHist += $E
+     
+    $XMax = $data[0].length
+    $Xmin = 0
+    $YMax = $data.count
+    $Ymin = 0
+    Write-Verbose ("X: {0}..{1}" -f $Xmin, $XMax)
+    Write-Verbose ("Y: {0}..{1}" -f $Ymin, $YMax)
+    $b.value -join ("")
+
+    #draw initial field
+    Draw-Field -F $f -E $E -B $B
+    write-host "That's it..."
+    
+    
+    #start of movement loop
+
+    #calculate bliz moves
+
+
+
+
+
+
+    }#begin
+}#function
+
+
+
+Function Get-FutureState{
+    [cmdletbinding()]
+    param(
+        $cbliz,
+        [int]$N
+    )
+    Begin{
+        $fh = @{}#future hash
+        foreach($cb in $cbliz){
+            switch($cb.value){
+                "#" {
+                    #position stays the same (its a wall)
+                    $fh[]
+                }
+            }
+        }
+
+    }
+} 
+
+
+Function Draw-Field {
+    [cmdletbinding()]
+    param(
+    $F,
+    $E,
+    $B
+    )
+    Begin{
+
+        $yp = $Ymin..($YMax -1)
+        $xp = $xmin..($XMax -1)
+        Clear-Content .\Day_24\map.txt
+        foreach($y in $yp){
+            [string] $lstr = ""
+            foreach($x in $xp){
+                $tc = ("{0},{1}" -f $x, $y)
+                if($f.ContainsKey($tc)){
+                    $p = $f[$tc]
+                    if($p.count -gt 1){
+                        $ch = $p.count
+                    }
+                    else{
+                        #doesn't contain multiple values
+                        $val = $b[$f[$tc]].Value
+                        $ch = $val
+                    }
+                }
+                else{
+                    if($E -eq $tc){
+                        $ch = "E"
+                    }
+                    Else{
+                    #No entry so display .
+                    $ch = "."
+                    }
+                }
+                
+                $lstr += $ch
+            }
+        Add-Content -Value $lstr -Path .\Day_24\map.txt
+        }
+
+    }#begin
+}#function
