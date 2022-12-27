@@ -42,8 +42,8 @@ Function D22{
         #$board
         
         #Build the Moves array
-        $boardmaxY = $i -1 
-        $boardmaxX = 0
+        [int]$boardmaxY = [int]$i -1 
+        [int]$boardmaxX = 0
 
 
         $i++
@@ -56,7 +56,7 @@ Function D22{
         $mda = $Movedata.tochararray()
         
         
-        $nstart = 0; $ncount = 0
+        [int]$nstart = 0; [int]$ncount = 0
         foreach($c in $mda){
             
             switch($C){
@@ -64,8 +64,8 @@ Function D22{
                     $Steps = $mda[$nstart..($nstart + $ncount -1)] -join ("")
                     #write-host ("Steps: {0}" -f $Steps)
                     $moves += $Steps
-                    $nstart = $nstart + $ncount + 1
-                    $ncount = 0
+                    [int]$nstart = [int]$nstart + [int]$ncount + 1
+                    [int]$ncount = 0
                     #write-host "Turn Right"
                     $moves += "Turn Right"
                 }
@@ -73,8 +73,8 @@ Function D22{
                     $Steps = $mda[$nstart..($nstart + $ncount -1)] -join ("")
                     #write-host ("Steps: {0}" -f $Steps)
                     $moves += $Steps
-                    $nstart = $nstart + $ncount + 1
-                    $ncount = 0
+                    [int]$nstart = [int]$nstart + [int]$ncount + 1
+                    [int]$ncount = 0
                     
                     #write-host "Turn Left"
                     $moves += "Turn Left"
@@ -97,7 +97,7 @@ Function D22{
     $startingDirection = "East"
     
     $P = [PSCustomObject]@{
-        x = $x
+        x = [int]$x
         y = 0
         Coord = $StartingCoord
         Facing = $startingDirection
@@ -108,8 +108,8 @@ Function D22{
     foreach($sqkey in $board.keys){
         [int]$tx = $sqkey.split(",")[0]
         [int]$ty = $sqkey.split(",")[1]
-        if($tx -gt $boardmaxX){$boardmaxX = $tx}
-        if($ty -gt $boardmaxY){$boardmaxY = $ty}
+        if($tx -gt $boardmaxX){[int]$boardmaxX = $tx}
+        if($ty -gt $boardmaxY){[int]$boardmaxY = $ty}
     }
 
     #Pad the board 
@@ -132,26 +132,26 @@ Draw-Board -bor $board -cp $P
 $moveit = $true
     #Move it
     if($moveit){
-        $moveind = 0
+        [int]$moveind = 0
     foreach ($m in $moves  ){
        #Write-host ("Move {0}" -f $moveind)
         Write-host ("`nMove Index: {0}  Move: {1}" -f $moveind,$m)
         switch($m){
             "Turn Left" {
                 $p.Facing = Get-NewDirection -currentHeading $p.Facing -TurnDirection $m
-                Draw-Board -bor $board -cp $P 
+                #Draw-Board -bor $board -cp $P 
                 #Write-host (" -Turning Left")
                 break
             }
             "Turn Right" {
                 $p.Facing = Get-NewDirection -currentHeading $p.Facing -TurnDirection $m
-                Draw-Board -bor $board -cp $P    
+                #Draw-Board -bor $board -cp $P    
                 #Write-Host (" -Turning Right")
                 break
             }   
             default {
                 #write-verbose (" -Moving {0}" -f $m)
-                $mm = 1
+                [int]$mm = 1
                 $donewithmove = $false
                 [int]$tempx = $p.x; [int]$tempy = $p.y
                 While( ($mm -le [int]$m) -and !$donewithmove){ 
@@ -177,16 +177,16 @@ $moveit = $true
                     if(!$exists){
                         switch($p.Facing){
                             "North" {
-                                $tempy = $boardmaxY ;break
+                                [int]$tempy = $boardmaxY ;break
                             }
                             "East" {
-                                $tempx = 0;break
+                                [int]$tempx = 0;break
                             }
                             "South" {
-                                $tempy = 0;break
+                                [int]$tempy = 0;break
                             }
                             "West" {
-                                $tempx = $boardmaxx;break
+                                [int]$tempx = $boardmaxx;break
                             }
                         }
                         $target = ("{0},{1}" -f $tempx ,$tempy)
@@ -250,13 +250,13 @@ $moveit = $true
                             $p.x = $target.split(",")[0]
                             $p.y = $target.split(",")[1]
                             $mm++
-                            Draw-Board -bor $board -cp $P
+                            #Draw-Board -bor $board -cp $P
                             break
                         }
                         "#" {
                             #We've hit a wall... stop moving and go to next move
                             $donewithmove = $true
-                            Draw-Board -bor $board -cp $P
+                            #Draw-Board -bor $board -cp $P
                             break
                         }
                     }
@@ -272,16 +272,16 @@ $moveit = $true
 if($true){  
     Draw-Board -bor $board -cp $P
     write-host ""
-    $fr = [int]$p.y + 1
+    [int]$fr = [int]$p.y + 1
     Write-host ("Final Row:{0}" -f $fr)
-    $fc = [int]$p.x + 1
+    [int]$fc = [int]$p.x + 1
     write-host ("Final Col:{0}" -f $fc)
 
     switch($p.Facing){
-        "North" {$fd = 3}
-        "East" {$fd = 0}
-        "South" {$fd = 1}
-        "West" {$fd = 2}
+        "North" {[int]$fd = 3}
+        "East" {[int]$fd = 0}
+        "South" {[int]$fd = 1}
+        "West" {[int]$fd = 2}
         }
     write-host ("Final Dir:{0} ({1})" -f $p.facing,$fd)
     
@@ -301,14 +301,14 @@ Function Get-NewDirection {
     Begin{
         #Write-host ("Start Facing: {0}" -f $currentHeading)
         switch($currentHeading){
-            "North" {$d = 0;break}
-            "East" {$d = 1;break}
-            "South" {$d = 2;break}
-            "West" {$d = 3;break}
+            "North" {[int]$d = 0;break}
+            "East" {[int]$d = 1;break}
+            "South" {[int]$d = 2;break}
+            "West" {[int]$d = 3;break}
         }
         switch($TurnDirection){
-            "Turn Left" {$d = ($d +3) % 4;break}
-            "Turn Right" {$d = ($d + 5) % 4;break}
+            "Turn Left" {[int]$d = ([int]$d +3) % 4;break}
+            "Turn Right" {[int]$d = ([int]$d + 5) % 4;break}
         }
         Switch($d){
             0 {$nd = "North";break}
@@ -333,10 +333,10 @@ function Draw-Board {
         foreach($sqkey in $bor.keys){
             [int]$tx = $sqkey.split(",")[0]
             [int]$ty = $sqkey.split(",")[1]
-            if($tx -gt $mx){$mx = $tx}
-            if($ty -gt $my){$My = $ty}
+            if($tx -gt $mx){[int]$mx = $tx}
+            if($ty -gt $my){[int]$My = $ty}
         }
-        set-content -Value "" -Path .\day_22\Mapoutput.txt
+        clear-content -Path .\day_22\Mapoutput.txt
         #Write-Verbose ("Max X: {0}  Max Y: {1}" -f $mx, $My)
         for($i = 0;$i -le $my;$i++){
             $tstr = ""
